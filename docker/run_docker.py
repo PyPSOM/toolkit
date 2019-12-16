@@ -13,6 +13,12 @@ if __name__ == "__main__":
     folder = args.folder if args.folder != None else os.getcwd()
     docker_cmd = args.command
 
-    command_docker = f'docker run -it -v {folder}/model:/usr/temp/pypsom hmalmeida/pypsom:0.63.0 tools/{docker_cmd}'
+    if docker_cmd.split(' ')[0] not in ["compile.sh", "configure.sh", "clean.sh"]:
+        command_docker = f'docker run -v {folder}/model:/usr/temp/pypsom hmalmeida/pypsom:0.63.0 -c "{docker_cmd}"'
+    else:
+        command_docker = f'docker run -v {folder}/model:/usr/temp/pypsom hmalmeida/pypsom:0.63.0 tools/{docker_cmd}'
+    print(docker_cmd)
+    ## For degub, delete print after finished
+    
     print("########################################", command_docker, "########################################", sep = '\n')
     subprocess.call(command_docker, shell = True)

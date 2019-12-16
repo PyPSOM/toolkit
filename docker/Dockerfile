@@ -10,8 +10,11 @@ RUN apt-get install -y gfortran
 RUN apt-get install -y vim
 RUN apt-get install -y libnetcdf-dev libnetcdff-dev
 RUN apt-get install -y xutils-dev
-COPY ./install_netcdf.sh /tmp/install_netcdf.sh
-RUN /tmp/install_netcdf.sh
+
+COPY dependencies/* /tmp/install_netcdf/dependencies/
+COPY ./install_netcdf.sh /tmp/install_netcdf/install.sh
+WORKDIR /tmp/install_netcdf
+RUN bash install.sh
 
 # Add GOTM Dependendicies
 RUN apt-get install -y cmake
@@ -34,7 +37,7 @@ RUN apt-get remove --purge -y curl
 WORKDIR /usr/temp/pypsom/code
 
 ENTRYPOINT ["bash"]
+CMD [ ]
 
 LABEL Author="PyPSOM Team"
 LABEL version="0.63.1"
-
