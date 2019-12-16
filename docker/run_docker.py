@@ -14,9 +14,9 @@ if __name__ == "__main__":
     docker_cmd = args.command
 
     if docker_cmd.split(' ')[0] not in ["compile.sh", "configure.sh", "clean.sh"]:
-        command_docker = f'docker run -v {folder}/model:/usr/temp/pypsom hmalmeida/pypsom:0.63.0 -c "{docker_cmd}"'
+        command_docker = f'docker run -v {folder}/model:/usr/tmp/pypsom hmalmeida/pypsom:0.63.0 -c "{docker_cmd}"'
     else:
-        command_docker = f'docker run -v {folder}/model:/usr/temp/pypsom hmalmeida/pypsom:0.63.0 tools/{docker_cmd}'
+        command_docker = f'docker run -v {folder}/model:/usr/tmp/pypsom hmalmeida/pypsom:0.63.0 tools/{docker_cmd}'
     print(docker_cmd)
     ## For degub, delete print after finished
     

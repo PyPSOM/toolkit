@@ -11,31 +11,31 @@ RUN apt-get install -y vim
 RUN apt-get install -y libnetcdf-dev libnetcdff-dev
 RUN apt-get install -y xutils-dev
 
-COPY dependencies/* /tmp/install_netcdf/dependencies/
+COPY dependencies/netcdf/* /tmp/install_netcdf/dependencies/
 COPY ./install_netcdf.sh /tmp/install_netcdf/install.sh
 WORKDIR /tmp/install_netcdf
 RUN bash install.sh
 
 # Add GOTM Dependendicies
 RUN apt-get install -y cmake
+RUN apt-get install -y make
 RUN mkdir -p /tmp/gotmbuild && mkdir -p /tmp/gotmsource
 WORKDIR /tmp/gotmsource
 ENV GOTM_BASE="/tmp/gotmsource/code"
 RUN git clone -q --recursive https://github.com/gotm-model/code.git
-WORKDIR /tmp/gotmbuild
-RUN $GOTM_BASE/scripts/linux/gotm_configure.sh 
-RUN $GOTM_BASE/scripts/linux/gotm_build.sh
+WORKDIR /root/build/gotm
+RUN sed -i 's/DGOTM_USE_FABM=on/DGOTM_USE_FABM=off/g' $GOTM_BASE/scripts/linux/gotm_configure.sh
+RUN ${GOTM_BASE}/scripts/linux/gotm_configure.sh
+RUN cd gfortran && make install
 ENV PATH="/root/local/gotm/gfortran/bin:${PATH}"
 
-# Delete of unnecessary dependencies
-RUN rm -rf ${GOTM_BASE}
+RUN apt-get remove --purge -y cmake
 RUN apt-get remove --purge -y wget
 RUN apt-get remove --purge -y python3
 RUN apt-get remove --purge -y git
 RUN apt-get remove --purge -y curl 
 
-WORKDIR /usr/temp/pypsom/code
-
+WORKDIR /usr/tmp/pypsom/code
 ENTRYPOINT ["bash"]
 CMD [ ]
 
