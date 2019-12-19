@@ -63,43 +63,6 @@ def psom_grid_shelfbreak(Lx, Ly, Max_depth, Min_depth, res, slope, ky):
     D = D*1e3
 
     return D,Ddx,Ddy,xi,yi
-# def psom_grid_shelfbreak_seamount(Lx, Ly, Max_depth, Min_depth, res, slope , ky, ktx, kty):
-
-    xi,yi = np.meshgrid(np.arange(0,Lx+res,res),
-                        np.arange(0,Ly+res,res))
-
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-
-    amplitude = Symbol('amplitude')                 # a
-    center = Symbol('center')                       # b
-    std = Symbol('std')                             # c
-    shelf_extention = Symbol('shelf_extention')     # d
-
-    g = amplitude*E**((-(z-center)**2)/(2*std**2))+shelf_extention
-
-    ky = {'center':ky_param[1]*Ly,'std':ky_param[2]*Ly,'amplitude':ky_param[0]*Lx,'shelf_extention':ky_param[3]*Lx,'z':y}
-    kx = {'center':g.subs(ky),'std':slope*np.abs(Max_depth-Min_depth),'amplitude':np.abs(Max_depth-Min_depth),'shelf_extention':Max_depth,'z':x}
-
-    kty = {'amplitude':kty_param[0]*Lx,'center':kty_param[1]*Ly,'std':kty_param[2]*Ly,'shelf_extention':kty_param[3]*Lx,'z':y}
-    ktx = {'amplitude':ktx_param[0],'center':ktx_param[1]*Lx,'std':ktx_param[2]*Lx,'shelf_extention':ktx_param[3],'z':x}
-    # ktx = {'amplitude':np.abs(Max_depth-Min_depth),'center':g.subs(kty),'std':slope*np.abs(Max_depth-Min_depth),'shelf_extention':Max_depth,'z':x}
-
-
-    p = Piecewise(
-        (1,(x<g.subs(ky))),
-        (g.subs(kx),(x>=g.subs(ky)))
-    )+g.subs(ktx)*g.subs(kty)
-    # p = g.subs(kx)+g.subs(ktx)*g.subs(kty)
-
-    display(Math(latex(Eq(Symbol('f(x,y)'),p))))
-
-    D = lambdify((x,y),p)(xi,yi) # D antigo topo_func
-    Ddx = (lambdify((x,y),diff(p,x))(xi,yi))
-    Ddy = (lambdify((x,y),diff(p,y))(xi,yi))
-
-    return D,Ddx,Ddy,xi,yi
 def psom_grid_seamount(Lx, Ly, Max_depth, Min_depth, res, ktx_param, kty_param):
 
     xi,yi = np.meshgrid(np.arange(0,Lx+res,res),
